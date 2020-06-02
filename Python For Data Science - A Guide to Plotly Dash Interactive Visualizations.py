@@ -34,7 +34,7 @@ app.layout = html.Div([
                 ],style={'width':'50%','display':'inline-block'}),
                 
                 html.Div([
-                    dcc.Graph(id='mpg-line',
+                    dcc.Graph(id='mpg-acceleration',
                               figure={
                                   'data':[go.Scatter(x=[0,1],
                                                     y=[0,1],
@@ -52,14 +52,14 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(Output('mpg-line','figure'),
+@app.callback(Output('mpg-acceleration','figure'),
              [Input('mpg-scatter','hoverData')])
 def callback_graph(hoverData):
-    v_index = hoverData['points'][0]['pointIndex']
+    df_index = hoverData['points'][0]['pointIndex']
     figure = {'data':[go.Scatter(x=[0,1],
-                                y=[0,60/df.iloc[v_index]['acceleration']],
+                                y=[0,60/df.iloc[df_index]['acceleration']],
                                 mode = 'lines',)],
-             'layout':go.Layout(title=df.iloc[v_index]['name'],
+             'layout':go.Layout(title=df.iloc[df_index]['name'],
                                 xaxis={'visible':False},
                                 yaxis={'visible':False,'range':[0,60/df['acceleration'].min()]},
                                 margin={'l':0},
@@ -70,12 +70,12 @@ def callback_graph(hoverData):
 @app.callback(Output('mpg-metrics','children'),
              [Input('mpg-scatter','hoverData')])
 def callback_stats(hoverData):
-    v_index = hoverData['points'][0]['pointIndex']
+    df_index = hoverData['points'][0]['pointIndex']
     metrics = """
             {}cc displacement,
             0 to 60mph in {} seconds
-            """.format(df.iloc[v_index]['displacement'],
-                      df.iloc[v_index]['acceleration'])
+            """.format(df.iloc[df_index]['displacement'],
+                      df.iloc[df_index]['acceleration'])
     return metrics
     
 
